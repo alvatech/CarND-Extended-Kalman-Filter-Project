@@ -48,6 +48,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     Hx << h0, h1, h2;
     VectorXd y = z - Hx;
     
+    // y(1) normalization https://discussions.udacity.com/t/rmse-values-of-ekf-project/243997
+    while (y(1) < -M_PI)
+        y(1) += 2 * M_PI;
+    while (y(1) > M_PI)
+        y(1) -= 2 * M_PI;
+    
     MatrixXd Ht = H_.transpose();
     MatrixXd S = H_ * P_ * Ht + R_;
     MatrixXd Si = S.inverse();
